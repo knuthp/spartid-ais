@@ -1,0 +1,6 @@
+Flask==0.12.1
+libais==0.16
+requests==2.13.0
+Flask-SQLAlchemy==2.2
+flask-marshmallow==0.7.0
+
