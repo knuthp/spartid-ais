@@ -19,12 +19,29 @@
                 attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
             }).addTo(map);
             
+            function track_2_popup(feature) {
+            	return "<table>" + 
+            			"<tr><td>" + "mmsi" + "</td><td>" + feature.properties.mmsi.toString() + "</td></tr>" + 
+            			"<tr><td>" + "course" + "</td><td>" + feature.properties.course.toFixed(1) + "</td></tr>" +
+            			"<tr><td>" + "heading" + "</td><td>" + feature.properties.heading.toFixed(1) + "</td></tr>" +
+            			"<tr><td>" + "speed" + "</td><td>" + feature.properties.speed.toFixed(1) + "</td></tr>" +
+            			"<tr><td>" + "last" + "</td><td>" + feature.properties.timestamp + "</td></tr>" +
+            			"</table>"
+            }
+            
+            function onEachFeature(feature, layer) {
+                // does this feature have a property named popupContent?
+                if (feature.properties && feature.properties.mmsi) {
+                    layer.bindPopup(track_2_popup(feature));
+                }
+            }
+            
             
             $(document).ready(function(){
-                $.getJSON("/api/tracks", function(result){
-                    $.each(result.data[0], function(i, field){
-                    	L.marker([field.long, field.lat]).addTo(map);
-                    });
+                $.getJSON("/api/tracks", function(geojsonFeatures){
+                    	L.geoJSON(geojsonFeatures, {
+                    		onEachFeature: onEachFeature
+                    	}).addTo(map);
                 });
                 
                 $(window).on("resize", function () { $("#map").height($(window).height()); map.invalidateSize(); }).trigger("resize");

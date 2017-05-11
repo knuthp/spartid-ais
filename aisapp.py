@@ -22,11 +22,25 @@ app = create_app()
 def hRoot():
     return "Hello"
 
+def _last_position_report_2_geojson(x):
+    return {'type' : 'Feature', 
+            'properties' : { 
+                'mmsi' : x.mmsi, 
+                'course' :  x.course, 
+                'heading' : x.heading, 
+                'speed' : x.speed, 
+                'timestamp' : x.timestamp }, 
+            'geometry' : {
+                'type' : 'Point', 
+                'coordinates' : [x.lat, x.long]
+                }
+            }
+
 @app.route('/api/tracks')
 def aShips():
     tracks = LastPositionReport.query.all()
-    tracks_json = LastPositionReportSchema().dump(tracks, many=True)
-    return jsonify({'_meta' : { 'size' : len(tracks) }, 'data' : tracks_json})
+    geojson_features = [_last_position_report_2_geojson(x) for x in tracks]
+    return jsonify({'type' : 'FeatureCollection', 'features' : geojson_features})
 
 if __name__ == '__main__':
     app.run('0.0.0.0')
