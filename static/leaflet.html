@@ -29,9 +29,17 @@
             			"</table>"
             }
             
+            function whenClicked(e) {
+            	  $.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/history", function(geojsonFeature){
+                  	L.geoJSON(geojsonFeature).addTo(map);
+              });            	}
+            
             function onEachFeature(feature, layer) {
                 // does this feature have a property named popupContent?
                 if (feature.properties && feature.properties.mmsi) {
+                	layer.on({
+                        click: whenClicked
+                    });
                     layer.bindPopup(track_2_popup(feature));
                 }
             }
