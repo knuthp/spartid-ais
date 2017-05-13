@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 
@@ -38,7 +40,9 @@ def _last_position_report_2_geojson(x):
 
 @app.route('/api/tracks')
 def aShips():
-    tracks = LastPositionReport.query.all()
+    six_hours_ago = datetime.datetime.utcnow() - datetime.timedelta(hours=6)
+    tracks = LastPositionReport.query.filter(LastPositionReport.timestamp > six_hours_ago).all()
+    print("Current number of tracks: {}".format(len(tracks)))
     geojson_features = [_last_position_report_2_geojson(x) for x in tracks]
     return jsonify({'type' : 'FeatureCollection', 'features' : geojson_features})
 
