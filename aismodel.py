@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, DateTime
+from sqlalchemy import Column, Integer, Float, DateTime, String
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -23,3 +23,12 @@ class HistoricPositionReport(db.Model):
     lat = Column(Float)
     long = Column(Float)
     timestamp = Column(DateTime)
+
+
+class ImoVesselCodes(db.Model):
+    __tablename__ = 'ImoVesselCodes'
+    mmsi = Column(String, primary_key=True, unique=True, index=True)    
+    imo  = Column(String)
+    name = Column(String)
+    flag = Column(String)        
+    type = Column(String)

@@ -10,29 +10,56 @@
    integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
    crossorigin=""></script>
    		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
     </head>
     <body>
      <div id="map" style="height: 400px"></div>     
         <script>
-            var map = L.map('map').setView([59.824713, 10.456367], 11);
-            L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
-                attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-            }).addTo(map);
+            var kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
+            var kartverketUrl = 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers={id}&zoom={z}&x={x}&y={y}'
+            var topo2 = L.tileLayer(kartverketUrl, {id : 'topo2', attribution: kartverketAttr})
+            var sjokart = L.tileLayer(kartverketUrl, {id : 'sjokartraster', attribution: kartverketAttr})
+
+            var map = L.map('map', {
+            	center: [59.824713, 10.456367],
+            	zoom: 11,
+            	layers: [topo2, sjokart]
+            });
             
-            function track_2_popup(feature) {
-            	return "<table>" + 
-            			"<tr><td>" + "mmsi" + "</td><td>" + feature.properties.mmsi.toString() + "</td></tr>" + 
-            			"<tr><td>" + "course" + "</td><td>" + feature.properties.course.toFixed(1) + "</td></tr>" +
-            			"<tr><td>" + "heading" + "</td><td>" + feature.properties.heading.toFixed(1) + "</td></tr>" +
-            			"<tr><td>" + "speed" + "</td><td>" + feature.properties.speed.toFixed(1) + "</td></tr>" +
-            			"<tr><td>" + "last" + "</td><td>" + feature.properties.timestamp + "</td></tr>" +
-            			"</table>"
+            var baseLayers = {
+               	'Sjøkart' : sjokart,
+            	'Topografisk' : topo2
+            }
+            
+            L.control.layers(baseLayers).addTo(map)
+            
+            
+            function track_2_popup(e) {
+            	var popup = e.target.getPopup();
+            	feature = e.target.feature
+            	$.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/details", function(details){
+            		var ts = moment(feature.properties.timestamp).fromNow();
+                	popup.setContent("<table>" + 
+                			   "<tr><th>" + "mmsi" + "</th><td>" + feature.properties.mmsi.toString() + "</td></tr>" + 
+                			   "<tr><th>" + "imo" + "</th><td>" + details.imo + "</td></tr>" +
+                			   "<tr><th>" + "name" + "</th><td>" + details.name + "</td></tr>" +
+                			   "<tr><th>" + "type" + "</th><td>" + details.type + "</td></tr>" +
+                			   "<tr><th>" + "flag" + "</th><td>" + details.flag + "</td></tr>" +
+                		 	   "<tr><th>" + "course" + "</th><td>" + feature.properties.course.toFixed(1) + "</td></tr>" +
+                		 	   "<tr><th>" + "heading" + "</th><td>" + feature.properties.heading.toFixed(1) + "</td></tr>" +
+                 			   "<tr><th>" + "speed" + "</th><td>" + feature.properties.speed.toFixed(1) + "</td></tr>" +
+              			       "<tr><th>" + "last" + "</th><td>" + ts + "</td><td>" + "</td></tr>" +
+                			"</table>")
+                	popup.update()
+                });
             }
             
             function whenClicked(e) {
+                track_2_popup(e)
             	  $.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/history", function(geojsonFeature){
                   	L.geoJSON(geojsonFeature).addTo(map);
-              });            	}
+              });            	
+            }
             
             function onEachFeature(feature, layer) {
                 // does this feature have a property named popupContent?
@@ -40,7 +67,7 @@
                 	layer.on({
                         click: whenClicked
                     });
-                    layer.bindPopup(track_2_popup(feature));
+                    layer.bindPopup("Loading...");
                 }
             }
             

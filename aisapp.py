@@ -3,7 +3,7 @@ import datetime
 from flask import Flask, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 
-from aismodel import db, LastPositionReport, HistoricPositionReport
+from aismodel import db, LastPositionReport, HistoricPositionReport, ImoVesselCodes
 from aisschema import ma, LastPositionReportSchema
 
 
@@ -39,7 +39,7 @@ def _last_position_report_2_geojson(x):
             }
 
 @app.route('/api/tracks')
-def aShips():
+def aTracks():
     six_hours_ago = datetime.datetime.utcnow() - datetime.timedelta(hours=6)
     tracks = LastPositionReport.query.filter(LastPositionReport.timestamp > six_hours_ago).all()
     print("Current number of tracks: {}".format(len(tracks)))
@@ -47,7 +47,7 @@ def aShips():
     return jsonify({'type' : 'FeatureCollection', 'features' : geojson_features})
 
 @app.route('/api/tracks/<mmsi>')
-def aShip(mmsi):
+def aTrack(mmsi):
     track = LastPositionReport.query.filter(LastPositionReport.mmsi == int(mmsi)).first()
     if track:
         return jsonify(_last_position_report_2_geojson(track))
@@ -55,10 +55,15 @@ def aShip(mmsi):
         abort(404)
 
 @app.route('/api/tracks/<mmsi>/history')
-def aShipHistory(mmsi):
+def aTrackHistory(mmsi):
     history =  HistoricPositionReport.query.filter(HistoricPositionReport.mmsi == int(mmsi)).all()
     geojson_coordinates = [[x.lat, x.long] for x in history]
     return jsonify({'type' : 'Feature', 'geometry' : {'type' : 'LineString', 'coordinates' : geojson_coordinates}})
+
+@app.route('/api/tracks/<mmsi>/details')
+def aTrackDetails(mmsi):
+    imoVesselCodes = ImoVesselCodes.query.filter(ImoVesselCodes.mmsi == str(mmsi)).first()
+    return jsonify({'imo' : imoVesselCodes.imo, 'name' : imoVesselCodes.name, 'flag' : imoVesselCodes.flag, 'type' : imoVesselCodes.type})
 
 if __name__ == '__main__':
     app.run('0.0.0.0')
