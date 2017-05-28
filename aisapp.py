@@ -57,8 +57,18 @@ def aTrack(mmsi):
 @app.route('/api/tracks/<mmsi>/history')
 def aTrackHistory(mmsi):
     history =  HistoricPositionReport.query.filter(HistoricPositionReport.mmsi == int(mmsi)).all()
-    geojson_coordinates = [[x.lat, x.long] for x in history]
-    return jsonify({'type' : 'Feature', 'geometry' : {'type' : 'LineString', 'coordinates' : geojson_coordinates}})
+    geojson_coordinates = []
+    linestring = []
+    lastReport = None
+    for x in history:
+        if lastReport and x.timestamp > lastReport + datetime.timedelta(minutes=30): 
+            if linestring:
+                geojson_coordinates.append(linestring)
+            linestring = []
+        lastReport = x.timestamp
+        linestring.append([x.lat, x.long])
+    geojson_coordinates.append(linestring)
+    return jsonify({'type' : 'Feature', 'geometry' : {'type' : 'MultiLineString', 'coordinates' : geojson_coordinates}})
 
 @app.route('/api/tracks/<mmsi>/details')
 def aTrackDetails(mmsi):
