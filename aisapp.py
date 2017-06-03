@@ -11,8 +11,10 @@ from aisschema import ma, LastPositionReportSchema
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aisrt.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../data/aisrt.db'
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
     ma.init_app(app)
     return app
 

@@ -4,6 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+class ShipDetails(db.Model):
+    __tablename__= 'ShipDetails'
+    
+    mmsi = Column(Integer, primary_key=True, unique=True, index=True)    
+    name = Column(String)
+
 
 class LastPositionReport(db.Model):
     __tablename__ = 'LastPosition'
