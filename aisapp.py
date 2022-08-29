@@ -36,7 +36,7 @@ def _last_position_report_2_geojson(x):
                 'timestamp' : x.timestamp }, 
             'geometry' : {
                 'type' : 'Point', 
-                'coordinates' : [x.lat, x.long]
+                'coordinates' : [x.long, x.lat]
                 }
             }
 
