@@ -68,7 +68,7 @@ def aTrackHistory(mmsi):
                 geojson_coordinates.append(linestring)
             linestring = []
         lastReport = x.timestamp
-        linestring.append([x.lat, x.long])
+        linestring.append([x.long, x.lat])
     geojson_coordinates.append(linestring)
     return jsonify({'type' : 'Feature', 'geometry' : {'type' : 'MultiLineString', 'coordinates' : geojson_coordinates}})
 
