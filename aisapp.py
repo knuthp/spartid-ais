@@ -1,3 +1,4 @@
+import os
 import datetime
 
 from flask import Flask, jsonify, send_from_directory, abort
@@ -11,7 +12,7 @@ from aisschema import ma, LastPositionReportSchema
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///aisrt.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI", 'sqlite:///aisrt.db')
     db.init_app(app)
     with app.app_context():
         db.create_all()

@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "9101:5000"
+    volumes:
+      - database:/data/sqlite
+    environment:
+      - SQLALCHEMY_DATABASE_URI=sqlite:////data/sqlite/aisrt.db
+    depends_on:
+      - "poller"
+
+  poller:
+    build:
+      context: .
+      dockerfile: Dockerfile.poller
+    volumes:
+      - database:/data/sqlite
+    environment:
+      - SQLALCHEMY_DATABASE_URI=sqlite:////data/sqlite/aisrt.db
+
+
+volumes:
+  database:

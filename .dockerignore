@@ -1,0 +1,6 @@
+.venv/*
+.project
+.pydevproject
+*.pyc
+aisrt.db
+aisrt.db-journal
