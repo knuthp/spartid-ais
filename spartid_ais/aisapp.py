@@ -4,8 +4,8 @@ import datetime
 from flask import Flask, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 
-from aismodel import db, LastPositionReport, HistoricPositionReport, ImoVesselCodes
-from aisschema import ma, LastPositionReportSchema
+from spartid_ais.aismodel import db, LastPositionReport, HistoricPositionReport, ImoVesselCodes
+from spartid_ais.aisschema import ma, LastPositionReportSchema
 
 
 

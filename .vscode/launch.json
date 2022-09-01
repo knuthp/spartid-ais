@@ -8,17 +8,24 @@
             "name": "Python: Webapp",
             "type": "python",
             "request": "launch",
-            "program": "aisapp.py",
+            "program": "spartid_ais/aisapp.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "env": {
+                "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
+            }
         },
         {
             "name": "Python: AIS Poller",
             "type": "python",
             "request": "launch",
-            "program": "kystverket.py",
+            "program": "spartid_ais/kystverket.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "env": {
+                "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
+            }
+
         }
     ]
 }

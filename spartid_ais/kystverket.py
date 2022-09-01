@@ -7,8 +7,8 @@ import time
 
 import ais.compatibility.gpsd
 import ais.stream
-from aismodel import ImoVesselCodes, db, HistoricPositionReport, LastPositionReport
-from aisapp import create_app
+from spartid_ais.aismodel import ImoVesselCodes, db, HistoricPositionReport, LastPositionReport
+from spartid_ais.aisapp import create_app
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
