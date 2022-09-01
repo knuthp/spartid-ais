@@ -8,7 +8,7 @@ class TestReceive:
 
     def test_msg_3_postion_report(self):
         raw = [
-            "\\s:2573535,c:1601581333*05\\!BSVDM,1,1,,A,33mGpL5000QE5URWuPIIj9LL0Dg:,0*02\r"
+            "\\s:2573535,c:1601581333*05\\!BSVDM,1,1,,A,33mGpL5000QE5URWuPIIj9LL0Dg:,0*02\r"  # noqa: E501
         ]
         msg = kystverket.read_raw(raw)
         print(msg)
@@ -22,7 +22,7 @@ class TestReceive:
 
     def test_msg_1_postion_report(self):
         raw = [
-            "\\s:2573515,c:1601654238*06\\!BSVDM,1,1,,A,13mdit?P00Q>HhRWL76v4?vT20S?,0*70\r"
+            "\\s:2573515,c:1601654238*06\\!BSVDM,1,1,,A,13mdit?P00Q>HhRWL76v4?vT20S?,0*70\r"  # noqa: E501
         ]
         msg = kystverket.read_raw(raw)
         print(msg)
@@ -36,7 +36,7 @@ class TestReceive:
 
     def test_4_base_station_report(self):
         raw = [
-            "\\s:2573010,c:1601654238*06\\!BSVDM,2,1,2,B,53m?QB400000hE9<000P4q>0985AA=A8tl00000Q10A346O@050QDQiCP000,0*01\r",
+            "\\s:2573010,c:1601654238*06\\!BSVDM,2,1,2,B,53m?QB400000hE9<000P4q>0985AA=A8tl00000Q10A346O@050QDQiCP000,0*01\r",  # noqa: E501
             "\\s:2573010,c:1601654238*06\\!BSVDM,2,2,2,B,00000000000,2*3C\r",
         ]
         msg = kystverket.read_raw(raw)
@@ -51,7 +51,7 @@ class TestReceive:
 class TestProblemMessages:
     def test_bad_bit_count(self):
         raw = [
-            "\s:2573575,c:1601669415*07\!BSVDM,1,1,,B,H3mfmU0l4LqE<00000000000000,2*5A"
+            "\s:2573575,c:1601669415*07\!BSVDM,1,1,,B,H3mfmU0l4LqE<00000000000000,2*5A"  # noqa: E501,W605
         ]
         msg = kystverket.read_raw(raw)
         assert msg["id"] == 3

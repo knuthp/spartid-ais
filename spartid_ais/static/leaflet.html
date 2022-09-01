@@ -13,7 +13,7 @@
    		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
     </head>
     <body>
-     <div id="map" style="height: 400px"></div>     
+     <div id="map" style="height: 400px"></div>
         <script>
             var kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
             var kystverketAttr = '<a href="http://www.kystverket.no/">Kystverket</a>'
@@ -26,22 +26,22 @@
             	zoom: 11,
             	layers: [topo2, sjokart]
             });
-            
+
             var baseLayers = {
                	'Sjøkart' : sjokart,
             	'Topografisk' : topo2
             }
-            
+
             L.control.layers(baseLayers).addTo(map)
-            
-            
+
+
             function track_2_popup(e) {
             	var popup = e.target.getPopup();
             	feature = e.target.feature
             	$.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/details", function(details){
             		var ts = moment(feature.properties.timestamp).fromNow();
-                	popup.setContent("<table>" + 
-                			   "<tr><th>" + "mmsi" + "</th><td>" + feature.properties.mmsi.toString() + "</td></tr>" + 
+                	popup.setContent("<table>" +
+                			   "<tr><th>" + "mmsi" + "</th><td>" + feature.properties.mmsi.toString() + "</td></tr>" +
                 			   "<tr><th>" + "imo" + "</th><td>" + details.imo + "</td></tr>" +
                 			   "<tr><th>" + "name" + "</th><td>" + details.name + "</td></tr>" +
                 			   "<tr><th>" + "type" + "</th><td>" + details.type + "</td></tr>" +
@@ -54,14 +54,14 @@
                 	popup.update()
                 });
             }
-            
+
             function whenClicked(e) {
                 track_2_popup(e)
             	  $.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/history", function(geojsonFeature){
                   	L.geoJSON(geojsonFeature).addTo(map);
-              });            	
+              });
             }
-            
+
             function onEachFeature(feature, layer) {
                 // does this feature have a property named popupContent?
                 if (feature.properties && feature.properties.mmsi) {
@@ -71,8 +71,8 @@
                     layer.bindPopup("Loading " + feature.properties.mmsi);
                 }
             }
-            
-            
+
+
             $(document).ready(function(){
                 $.getJSON("/api/tracks", function(geojsonFeatures){
                     	L.geoJSON(geojsonFeatures, {
@@ -80,7 +80,7 @@
                     		attribution : kystverketAttr
                     	}).addTo(map);
                 });
-                
+
                 $(window).on("resize", function () { $("#map").height($(window).height()); map.invalidateSize(); }).trigger("resize");
             });
         </script>
