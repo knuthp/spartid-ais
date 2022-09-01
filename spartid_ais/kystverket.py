@@ -1,41 +1,66 @@
-from datetime import datetime, timedelta
-import json
 import logging
 import socket
 import sys
 import time
+from datetime import datetime, timedelta
 
 import ais.compatibility.gpsd
 import ais.stream
-from spartid_ais.aismodel import ImoVesselCodes, db, HistoricPositionReport, LastPositionReport
+
 from spartid_ais.aisapp import create_app
+from spartid_ais.aismodel import (
+    HistoricPositionReport,
+    ImoVesselCodes,
+    LastPositionReport,
+    db,
+)
 
-
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 
-def readlines(sock, recv_buffer=4096, delim='\n'):
-	buffer = ''
-	data = True
-	while data:
-		data = sock.recv(recv_buffer).decode()
-		buffer += data
+def readlines(sock, recv_buffer=4096, delim="\n"):
+    buffer = ""
+    data = True
+    while data:
+        data = sock.recv(recv_buffer).decode()
+        buffer += data
 
-		while buffer.find(delim) != -1:
-			line, buffer = buffer.split('\n', 1)
-			yield line
-	return
+        while buffer.find(delim) != -1:
+            line, buffer = buffer.split("\n", 1)
+            yield line
+    return
 
 
 def read_raw(generator):
     stack = [[] for _ in range(10)]
     for line in generator:
-        values = line.split(',')
+        values = line.split(",")
         if len(values) == 7:
-            packet_type, count, fragment_no, seq_id, radio_channel, payload, fill_bits_checksum = values
+            (
+                packet_type,
+                count,
+                fragment_no,
+                seq_id,
+                radio_channel,
+                payload,
+                fill_bits_checksum,
+            ) = values
         elif len(values) == 8:
-            num, packet_type, count, fragment_no, seq_id, radio_channel, payload, fill_bits_checksum = values
+            (
+                num,
+                packet_type,
+                count,
+                fragment_no,
+                seq_id,
+                radio_channel,
+                payload,
+                fill_bits_checksum,
+            ) = values
         else:
             logger.error("Could not unpack line into 7 elements %s", line)
             continue
@@ -47,7 +72,7 @@ def read_raw(generator):
         if count == 1:
             try:
                 ais_msg = ais.decode(payload, 0)
-            except:
+            except Exception:
                 logger.exception("Failed to decode sinlge message last_line=%s", line)
                 continue
         else:
@@ -59,11 +84,16 @@ def read_raw(generator):
                 stack[seq_id] = []
                 try:
                     ais_msg = ais.decode(total_payload, fill_bits)
-                except Exception as e:
-                    logger.exception("Failed to decode fragmented message. total_payload=%s, fill_bits=%s, last_line=%s",
-                        total_payload, fill_bits, line)
+                except Exception:
+                    logger.exception(
+                        "Failed to decode fragmented message."
+                        " total_payload=%s, fill_bits=%s, last_line=%s",
+                        total_payload,
+                        fill_bits,
+                        line,
+                    )
                     continue
-#        logger.debug("id:{id}, mmsi:{mmsi},".format(**ais_msg))
+        #        logger.debug("id:{id}, mmsi:{mmsi},".format(**ais_msg))
         if ais_msg is not None:
             return ais_msg
         else:
@@ -72,21 +102,23 @@ def read_raw(generator):
 
 def create_lastposition(ais_msg):
     return LastPositionReport(
-        mmsi=ais_msg['mmsi'],
-        lat=ais_msg['lat'], 
-        long=ais_msg['lon'], 
-        speed=ais_msg['speed'], 
-        course=ais_msg['course'], 
-        heading=ais_msg['heading'],
-        timestamp=datetime.utcnow())
-    
+        mmsi=ais_msg["mmsi"],
+        lat=ais_msg["lat"],
+        long=ais_msg["lon"],
+        speed=ais_msg["speed"],
+        course=ais_msg["course"],
+        heading=ais_msg["heading"],
+        timestamp=datetime.utcnow(),
+    )
+
 
 def create_historicposition(ais_msg):
     return HistoricPositionReport(
-        mmsi=ais_msg['mmsi'], 
-        lat=ais_msg['lat'], 
-        long=ais_msg['lon'], 
-        timestamp=datetime.utcnow())
+        mmsi=ais_msg["mmsi"],
+        lat=ais_msg["lat"],
+        long=ais_msg["lon"],
+        timestamp=datetime.utcnow(),
+    )
 
 
 def create_imovesselcode(ais_msg):
@@ -96,19 +128,19 @@ def create_imovesselcode(ais_msg):
         name=ais_msg["name"].strip("@").strip(),
         flag="",
         type=ais_msg["type_and_cargo"],
-    )    
+    )
 
-KYSTINFO_HOST = '153.44.253.27'
+
+KYSTINFO_HOST = "153.44.253.27"
 KYSTINFO_PORT = 5631
 BUFFER_SIZE = 1024
 LOG_STATS_FREQ_S = 60
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-    
+
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((KYSTINFO_HOST, KYSTINFO_PORT))
         s.settimeout(20)
@@ -123,8 +155,8 @@ if __name__ == '__main__':
                 gpsdmsg = ais.compatibility.gpsd.mangle(ais_msg)
 
                 utc_now = datetime.utcnow()
-                gpsdmsg['timestamp'] = utc_now
-                logger.debug('gpsd: {}'.format(gpsdmsg))
+                gpsdmsg["timestamp"] = utc_now
+                logger.debug("gpsd: {}".format(gpsdmsg))
 
                 num_msgs += 1
                 if (utc_now - last_logging).seconds >= LOG_STATS_FREQ_S:
@@ -132,17 +164,17 @@ if __name__ == '__main__':
                     last_logging = utc_now
                     num_msgs = 0
 
-                if ais_msg['id'] in [3]: # [1, 3]:
+                if ais_msg["id"] in [3]:  # [1, 3]:
                     last_postion = create_lastposition(gpsdmsg)
                     db.session.merge(last_postion)
                     # pos_map[msg['mmsi']] = msg
-                    
+
                     historic_position = create_historicposition(gpsdmsg)
                     db.session.add(historic_position)
                     db.session.commit()
-                elif ais_msg['id'] in [5]:
+                elif ais_msg["id"] in [5]:
                     imovessel_code = create_imovesselcode(ais_msg)
-                    db.session.merge(imovessel_code)                    
+                    db.session.merge(imovessel_code)
                     db.session.commit()
                 else:
                     pass
@@ -162,5 +194,4 @@ if __name__ == '__main__':
                         logger.exception("Failed to reconnect, retrying")
                         time.sleep(10.0)
 
-
-        s.close() 
+        s.close()
