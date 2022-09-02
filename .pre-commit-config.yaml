@@ -30,5 +30,5 @@ repos:
     rev: 1.2.0
     hooks:
       - id: poetry-check
-        args: ["--no-update"]
       - id: poetry-lock
+        args: ["--no-update"]
