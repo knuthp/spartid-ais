@@ -5,4 +5,4 @@
 This demo is made using Python with Flask for the web server part, Leaflet/HTML for the presentation and SQLite for the database. AIS position data is read from a TCP connection continously. The position updates are stored in a SQLite database using two tables: LastPositionReport and HistoricPosition. In addition a mapping table from mmsi to IMO data are imported into ImoVesselCodes table.
 
 # Example
-![Map](doc/AIS_history.png)
+![Map](docs/AIS_history.png)
