@@ -1,6 +1,5 @@
 import logging
 import socket
-import sys
 import time
 from datetime import datetime, timedelta
 
@@ -15,11 +14,6 @@ from spartid_ais.aismodel import (
     db,
 )
 
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-)
 logger = logging.getLogger(__name__)
 
 
@@ -38,6 +32,7 @@ def readlines(sock, recv_buffer=4096, delim="\n"):
 
 def read_raw(generator):
     stack = [[] for _ in range(10)]
+    fill_bits = 0
     for line in generator:
         values = line.split(",")
         if len(values) == 7:
@@ -67,14 +62,16 @@ def read_raw(generator):
         count = int(count)
         fragment_no = int(fragment_no)
         seq_id = int(seq_id) if seq_id else None
-        fill_bits = int(fill_bits_checksum[0])
+        fill_bits += int(fill_bits_checksum[0])
 
         if count == 1:
             try:
-                ais_msg = ais.decode(payload, 0)
+                ais_msg = ais.decode(payload, fill_bits)
+                logger.debug("Success decoding last_line=%s", line)
             except Exception:
-                logger.exception("Failed to decode sinlge message last_line=%s", line)
+                logger.exception("Failed to decode single message last_line=%s", line)
                 continue
+
         else:
             stack[seq_id].append(payload)
             if fragment_no < count:
@@ -94,10 +91,10 @@ def read_raw(generator):
                     )
                     continue
         #        logger.debug("id:{id}, mmsi:{mmsi},".format(**ais_msg))
-        if ais_msg is not None:
-            return ais_msg
-        else:
+        if ais_msg is None:
             logger.warning("Got an empty ais message: %s", line)
+            return None
+        return ais_msg
 
 
 def create_lastposition(ais_msg):
@@ -151,6 +148,9 @@ if __name__ == "__main__":
         while True:
             try:
                 ais_msg = read_raw(generator)
+                if ais_msg is None:
+                    logger.warning("read_raw() returned None")
+                    continue
                 # logger.debug("id:{id}, mmsi:{mmsi},".format(**ais_msg))
                 gpsdmsg = ais.compatibility.gpsd.mangle(ais_msg)
 

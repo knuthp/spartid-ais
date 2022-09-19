@@ -47,6 +47,14 @@ class TestReceive:
         assert "LERS" in msg["callsign"]
         assert "BERGEN" in msg["destination"]
 
+    def test_fill_bits_not_zero(self):
+        raw = [
+            "\\s:2573305,c:1663617395*04\\!BSVDM,1,1,,B,H3m;c<0h4e<I84e@00000000000,2*29\r",  # noqa: E501
+        ]
+        msg = kystverket.read_raw(raw)
+        assert msg["id"] == 24
+        assert msg["mmsi"] == 257092400
+
 
 class TestProblemMessages:
     def test_bad_bit_count(self):
@@ -56,4 +64,3 @@ class TestProblemMessages:
         msg = kystverket.read_raw(raw)
         assert msg["id"] == 3
         assert msg["mmsi"] == 1
-        assert 0 == 1
