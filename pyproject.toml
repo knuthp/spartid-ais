@@ -9,14 +9,14 @@ python = "^3.9"
 Flask = "^2.2.2"
 libais = "^0.17"
 requests = "^2.28.1"
-Flask-SQLAlchemy = "^2.5.1"
+Flask-SQLAlchemy = "^3.0.2"
 flask-marshmallow = "^0.14.0"
 
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.2"
-flake8 = "^5.0.4"
+flake8 = "^6.0.0"
 isort = "^5.10.1"
 black = "^22.6.0"
 
@@ -24,7 +24,7 @@ black = "^22.6.0"
 [tool.poetry.group.datasciene.dependencies]
 pandas = "^1.4.4"
 jupyterlab = "^3.4.5"
-pyarrow = "^9.0.0"
+pyarrow = "^10.0.1"
 
 
 [tool.isort]
