@@ -1,6 +1,10 @@
-.venv/*
-.project
-.pydevproject
-*.pyc
 aisrt.db
 aisrt.db-journal
+docs/*
+instance/*
+notebooks/*
+__pycache__/*
+.pytest_cache/*
+tests/
+.venv/*
+.vscode/*

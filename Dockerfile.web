@@ -1,6 +1,6 @@
 FROM python:3.10 as python
 ENV PYTHONUNBUFFERED=true
-RUN apt-get update -y && apt-get install -y python3-dev build-essential
+RUN apt-get update -y && apt-get install -y python3-dev build-essential curl
 WORKDIR /app
 
 
@@ -8,7 +8,7 @@ FROM python as poetry
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV PATH="$POETRY_HOME/bin:$PATH"
-RUN python -c 'from urllib.request import urlopen; print(urlopen("https://install.python-poetry.org").read().decode())' | python -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY pyproject.toml ./
 COPY poetry.lock ./
 RUN poetry install --no-interaction --no-ansi -vvv
@@ -20,4 +20,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 COPY --from=poetry /app /app
 COPY . /app/
 EXPOSE 8000
-CMD ["python", "aisapp.py"]
+ENV PYTHONPATH="${PYTHONPATH}:/app"
+CMD ["python", "spartid_ais/aisapp.py"]
