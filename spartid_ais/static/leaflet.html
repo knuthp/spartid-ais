@@ -17,8 +17,8 @@
         <script>
             var kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
             var kystverketAttr = '<a href="http://www.kystverket.no/">Kystverket</a>'
-            var kartverketUrl = 'http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers={id}&zoom={z}&x={x}&y={y}'
-            var topo2 = L.tileLayer(kartverketUrl, {id : 'topo2', attribution: kartverketAttr})
+            var kartverketUrl = 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers={id}&zoom={z}&x={x}&y={y}'
+            var topo2 = L.tileLayer(kartverketUrl, {id : 'topo4', attribution: kartverketAttr})
             var sjokart = L.tileLayer(kartverketUrl, {id : 'sjokartraster', attribution: kartverketAttr})
 
             var map = L.map('map', {
