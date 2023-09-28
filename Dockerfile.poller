@@ -1,4 +1,4 @@
-FROM python:3.10 as python
+FROM python:3.11.5 as python
 ENV PYTHONUNBUFFERED=true
 RUN apt-get update -y && apt-get install -y python3-dev build-essential curl
 WORKDIR /app
@@ -11,7 +11,7 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY pyproject.toml ./
 COPY poetry.lock ./
-RUN poetry install --no-interaction --no-ansi -vvv
+RUN poetry install --only main --no-interaction --no-ansi -vvv
 
 
 

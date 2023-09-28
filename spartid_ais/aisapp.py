@@ -117,6 +117,8 @@ def aTrackDetails(mmsi):
     imoVesselCodes = ImoVesselCodes.query.filter(
         ImoVesselCodes.mmsi == str(mmsi)
     ).first()
+    if imoVesselCodes is None:
+        return jsonify({"error": "Not found"})
     return jsonify(
         {
             "imo": imoVesselCodes.imo,
