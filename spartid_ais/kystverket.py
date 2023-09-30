@@ -58,31 +58,34 @@ if __name__ == "__main__":
     with app.app_context():
         last_logging = datetime.utcnow() - timedelta(seconds=LOG_STATS_FREQ_S - 5)
         num_msgs = 0
-        for msg in TCPConnection(KYSTINFO_HOST, KYSTINFO_PORT):
-            try:
-                decoded_message = msg.decode()
-                utc_now = datetime.utcnow()
-                logger.debug("decoded: {}".format(decoded_message))
+        while True:
+            for msg in TCPConnection(KYSTINFO_HOST, KYSTINFO_PORT):
+                try:
+                    decoded_message = msg.decode()
+                    utc_now = datetime.utcnow()
+                    logger.debug("decoded: {}".format(decoded_message))
 
-                num_msgs += 1
-                if (utc_now - last_logging).seconds >= LOG_STATS_FREQ_S:
-                    logging.info("Number of msgs: {}".format(num_msgs))
-                    last_logging = utc_now
-                    num_msgs = 0
+                    num_msgs += 1
+                    if (utc_now - last_logging).seconds >= LOG_STATS_FREQ_S:
+                        logging.info("Number of msgs: {}".format(num_msgs))
+                        last_logging = utc_now
+                        num_msgs = 0
 
-                if decoded_message.msg_type in [1, 3, 18]:
-                    last_postion = create_lastposition(decoded_message)
-                    db.session.merge(last_postion)
+                    if decoded_message.msg_type in [1, 3, 18]:
+                        last_postion = create_lastposition(decoded_message)
+                        db.session.merge(last_postion)
 
-                    historic_position = create_historicposition(decoded_message)
-                    db.session.add(historic_position)
-                    db.session.commit()
-                elif decoded_message.msg_type in [5]:
-                    imovessel_code = create_imovesselcode(decoded_message)
-                    db.session.merge(imovessel_code)
-                    db.session.commit()
-                else:
-                    pass
-                    # logger.warning("Not expected message type %s", decoded_message)
-            except sqlite3.OperationalError:
-                logger.warn("Database Operational Error.")
+                        historic_position = create_historicposition(decoded_message)
+                        db.session.add(historic_position)
+                        db.session.commit()
+                    elif decoded_message.msg_type in [5]:
+                        imovessel_code = create_imovesselcode(decoded_message)
+                        db.session.merge(imovessel_code)
+                        db.session.commit()
+                    else:
+                        pass
+                        # logger.warning(
+                        #    "Not expected message type %s", decoded_message
+                        # )
+                except sqlite3.OperationalError:
+                    logger.warn("Database Operational Error.")
