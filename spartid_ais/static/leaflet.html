@@ -3,31 +3,41 @@
     <head>
         <meta charset="utf-8">
         <title>AIS history Norway</title>
-		 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
-   integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
-   crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
-   integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
-   crossorigin=""></script>
-   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-   		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+        <link
+            rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+            <style>
+                body {
+                    padding: 0;
+                    margin: 0;
+                }
+                html, body, #map {
+                    height: 100%;
+                    width: 100%;
+                }
+            </style>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+   		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.js"></script>
     </head>
     <body>
-     <div id="map" style="height: 400px"></div>
+     <div id="map"></div>
         <script>
-            var kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
-            var kystverketAttr = '<a href="http://www.kystverket.no/">Kystverket</a>'
-            var kartverketUrl = 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers={id}&zoom={z}&x={x}&y={y}'
-            var topo2 = L.tileLayer(kartverketUrl, {id : 'topo4', attribution: kartverketAttr})
-            var sjokart = L.tileLayer(kartverketUrl, {id : 'sjokartraster', attribution: kartverketAttr})
+            const kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
+            const kystverketAttr = '<a href="http://www.kystverket.no/">Kystverket</a>'
+            const kartverketUrl = 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers={id}&zoom={z}&x={x}&y={y}'
+            const topo2 = L.tileLayer(kartverketUrl, {id : 'topo4', attribution: kartverketAttr})
+            const sjokart = L.tileLayer(kartverketUrl, {id : 'sjokartraster', attribution: kartverketAttr})
 
-            var map = L.map('map', {
+            const map = L.map('map', {
             	center: [59.824713, 10.456367],
             	zoom: 11,
             	layers: [topo2, sjokart]
             });
 
-            var baseLayers = {
+            const baseLayers = {
                	'Sjøkart' : sjokart,
             	'Topografisk' : topo2
             }
@@ -36,30 +46,40 @@
 
 
             function track_2_popup(e) {
-            	var popup = e.target.getPopup();
+            	const popup = e.target.getPopup();
             	feature = e.target.feature
-            	$.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/details", function(details){
-            		var ts = moment(feature.properties.timestamp).fromNow();
-                	popup.setContent("<table>" +
-                			   "<tr><th>" + "mmsi" + "</th><td>" + feature.properties.mmsi.toString() + "</td></tr>" +
-                			   "<tr><th>" + "imo" + "</th><td>" + details.imo + "</td></tr>" +
-                			   "<tr><th>" + "name" + "</th><td>" + details.name + "</td></tr>" +
-                			   "<tr><th>" + "type" + "</th><td>" + details.type + "</td></tr>" +
-                			   "<tr><th>" + "flag" + "</th><td>" + details.flag + "</td></tr>" +
-                		 	   "<tr><th>" + "course" + "</th><td>" + feature.properties.course.toFixed(1) + "</td></tr>" +
-                		 	   "<tr><th>" + "heading" + "</th><td>" + feature.properties.heading.toFixed(1) + "</td></tr>" +
-                 			   "<tr><th>" + "speed" + "</th><td>" + feature.properties.speed.toFixed(1) + "</td></tr>" +
-              			       "<tr><th>" + "last" + "</th><td>" + ts + "</td><td>" + "</td></tr>" +
-                			"</table>")
-                	popup.update()
-                });
+            	fetch("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/details")
+                    .then(res => res.json())
+                    .then(function(details) {
+                        const ts = moment(feature.properties.timestamp).fromNow();
+                        popup.setContent("<table>" +
+                                "<tr><th>" + "mmsi" + "</th><td>" + feature.properties.mmsi.toString() + "</td></tr>" +
+                                "<tr><th>" + "imo" + "</th><td>" + details.imo + "</td></tr>" +
+                                "<tr><th>" + "name" + "</th><td>" + details.name + "</td></tr>" +
+                                "<tr><th>" + "type" + "</th><td>" + details.type + "</td></tr>" +
+                                "<tr><th>" + "flag" + "</th><td>" + details.flag + "</td></tr>" +
+                                "<tr><th>" + "course" + "</th><td>" + feature.properties.course.toFixed(1) + "</td></tr>" +
+                                "<tr><th>" + "heading" + "</th><td>" + feature.properties.heading.toFixed(1) + "</td></tr>" +
+                                "<tr><th>" + "speed" + "</th><td>" + feature.properties.speed.toFixed(1) + "</td></tr>" +
+                                "<tr><th>" + "last" + "</th><td>" + ts + "</td><td>" + "</td></tr>" +
+                                "</table>")
+                        popup.update()
+                    })
+                    .catch(function () {
+                        alert("Failed to get details")
+                    });
             }
 
             function whenClicked(e) {
                 track_2_popup(e)
-            	  $.getJSON("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/history", function(geojsonFeature){
-                  	L.geoJSON(geojsonFeature).addTo(map);
-              });
+            	fetch("/api/tracks/" + e.target.feature.properties.mmsi.toString() + "/history")
+                    .then(res => res.json())
+                    .then(function(geojsonFeature) {
+                  	    L.geoJSON(geojsonFeature).addTo(map);
+                })
+                .catch(function() {
+                    alert("Failed to get history")
+                });
             }
 
             function onEachFeature(feature, layer) {
@@ -73,16 +93,19 @@
             }
 
 
-            $(document).ready(function(){
-                $.getJSON("/api/tracks", function(geojsonFeatures){
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch("/api/tracks")
+                    .then(res => res.json())
+                    .then(function (geojsonFeatures) {
                     	L.geoJSON(geojsonFeatures, {
                     		onEachFeature: onEachFeature,
                     		attribution : kystverketAttr
                     	}).addTo(map);
-                });
-
-                $(window).on("resize", function () { $("#map").height($(window).height()); map.invalidateSize(); }).trigger("resize");
-            });
+                    })
+                    .catch(function() {
+                        alert("Failed to get tracks")
+                    });
+            }, false);
         </script>
     </body>
 </html>
