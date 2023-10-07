@@ -8,12 +8,19 @@
             "name": "Python: Webapp",
             "type": "python",
             "request": "launch",
-            "program": "spartid_ais/aisapp.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
+            "module": "flask",
             "env": {
+                "FLASK_APP": "spartid_ais",
+                "FLASK_DEBUG": "1",
                 "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
-            }
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload"
+            ],
+            "jinja": true,
+            "justMyCode": true
         },
         {
             "name": "Python: AIS Poller",

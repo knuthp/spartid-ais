@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, DateTime, Float, Integer, String
 
-db = SQLAlchemy()
+from spartid_ais import db
 
 
 class LastPositionReport(db.Model):
@@ -32,3 +31,7 @@ class ImoVesselCodes(db.Model):
     name = Column(String)
     flag = Column(String)
     type = Column(String)
+
+
+def init_app(app):
+    return db

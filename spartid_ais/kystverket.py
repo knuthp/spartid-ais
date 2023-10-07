@@ -5,8 +5,8 @@ import sqlite3
 from pyais.messages import MessageType1, MessageType5, MessageType18
 from pyais.stream import TCPConnection
 
-from spartid_ais.aisapp import create_app
-from spartid_ais.aismodel import (
+from spartid_ais import create_app
+from spartid_ais.models import (
     HistoricPositionReport,
     ImoVesselCodes,
     LastPositionReport,
