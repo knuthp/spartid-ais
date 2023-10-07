@@ -1,53 +1,17 @@
 import datetime
-import os
-from logging.config import dictConfig
 
-from flask import Flask, abort, jsonify, send_from_directory
-
-from spartid_ais.aismodel import (
+from flask import abort, jsonify, send_from_directory, Blueprint
+from spartid_ais.models import (
     HistoricPositionReport,
     ImoVesselCodes,
     LastPositionReport,
-    db,
-)
-from spartid_ais.aisschema import ma
-
-dictConfig(
-    {
-        "version": 1,
-        "formatters": {
-            "default": {
-                "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
-            }
-        },
-        "handlers": {
-            "wsgi": {
-                "class": "logging.StreamHandler",
-                "stream": "ext://flask.logging.wsgi_errors_stream",
-                "formatter": "default",
-            }
-        },
-        "root": {"level": "INFO", "handlers": ["wsgi"]},
-    }
 )
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-        "SQLALCHEMY_DATABASE_URI", "sqlite:///aisrt.db"
-    )
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
-    ma.init_app(app)
-    return app
+bp = Blueprint("views", __name__)
 
 
-app = create_app()
-
-
-@app.route("/")
+@bp.route("/")
 def hRoot():
     return send_from_directory("static", "leaflet.html")
 
@@ -66,7 +30,7 @@ def _last_position_report_2_geojson(x):
     }
 
 
-@app.route("/api/tracks")
+@bp.route("/api/tracks")
 def aTracks():
     six_hours_ago = datetime.datetime.utcnow() - datetime.timedelta(hours=6)
     tracks = LastPositionReport.query.filter(
@@ -77,7 +41,7 @@ def aTracks():
     return jsonify({"type": "FeatureCollection", "features": geojson_features})
 
 
-@app.route("/api/tracks/<mmsi>")
+@bp.route("/api/tracks/<mmsi>")
 def aTrack(mmsi):
     track = LastPositionReport.query.filter(
         LastPositionReport.mmsi == int(mmsi)
@@ -88,7 +52,7 @@ def aTrack(mmsi):
         abort(404)
 
 
-@app.route("/api/tracks/<mmsi>/history")
+@bp.route("/api/tracks/<mmsi>/history")
 def aTrackHistory(mmsi):
     history = HistoricPositionReport.query.filter(
         HistoricPositionReport.mmsi == int(mmsi)
@@ -112,7 +76,7 @@ def aTrackHistory(mmsi):
     )
 
 
-@app.route("/api/tracks/<mmsi>/details")
+@bp.route("/api/tracks/<mmsi>/details")
 def aTrackDetails(mmsi):
     imoVesselCodes = ImoVesselCodes.query.filter(
         ImoVesselCodes.mmsi == str(mmsi)
@@ -127,7 +91,3 @@ def aTrackDetails(mmsi):
             "type": imoVesselCodes.type,
         }
     )
-
-
-if __name__ == "__main__":
-    app.run("0.0.0.0")

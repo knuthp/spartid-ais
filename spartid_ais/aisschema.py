@@ -1,9 +1,4 @@
-from flask_marshmallow import Marshmallow
-
-# from aismodel import LastPositionReport
-
-
-ma = Marshmallow()
+from spartid_ais import ma
 
 
 class LastPositionReportSchema(ma.Schema):
