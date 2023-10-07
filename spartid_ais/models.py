@@ -4,7 +4,7 @@ from spartid_ais import db
 
 
 class LastPositionReport(db.Model):
-    __tablename__ = "LastPosition"
+    __tablename__ = "last_position"
 
     mmsi = Column(Integer, primary_key=True, unique=True, index=True)
     lat = Column(Float)
@@ -16,7 +16,7 @@ class LastPositionReport(db.Model):
 
 
 class HistoricPositionReport(db.Model):
-    __tablename__ = "HistoricPosition"
+    __tablename__ = "historic_position"
     id = Column(Integer, primary_key=True)
     mmsi = Column(Integer, index=True)
     lat = Column(Float)
@@ -25,8 +25,8 @@ class HistoricPositionReport(db.Model):
 
 
 class ImoVesselCodes(db.Model):
-    __tablename__ = "ImoVesselCodes"
-    mmsi = Column(String, primary_key=True, unique=True, index=True)
+    __tablename__ = "imo_vessel_codes"
+    mmsi = Column(Integer, primary_key=True, unique=True, index=True)
     imo = Column(String)
     name = Column(String)
     flag = Column(String)

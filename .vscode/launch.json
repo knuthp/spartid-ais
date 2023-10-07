@@ -12,7 +12,7 @@
             "env": {
                 "FLASK_APP": "spartid_ais",
                 "FLASK_DEBUG": "1",
-                "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
+                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais"
             },
             "args": [
                 "run",
@@ -30,7 +30,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
+                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais"
             }
 
         }

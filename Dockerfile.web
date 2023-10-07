@@ -21,4 +21,4 @@ COPY --from=poetry /app /app
 COPY . /app/
 EXPOSE 8000
 ENV PYTHONPATH="${PYTHONPATH}:/app"
-CMD ["python", "spartid_ais/aisapp.py"]
+CMD ["flask", "--app=spartid_ais", "run", "--host=0.0.0.0"]

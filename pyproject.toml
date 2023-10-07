@@ -11,6 +11,7 @@ requests = "^2.28.1"
 flask-sqlalchemy = "^3.0.2"
 flask-marshmallow = "^0.15.0"
 pyais = "^2.5.7"
+psycopg2-binary = "^2.9.9"
 
 
 
