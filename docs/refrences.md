@@ -16,3 +16,9 @@ title: Reference documentation
 
 ## Flask
 1. [The Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xv-a-better-application-structure)
+1. [PostGIS](https://postgis.net/)
+1. [SQLAlchemy](https://www.sqlalchemy.org/)
+1. [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/)
+
+## Jupyter
+1. [Pandas](https://pandas.pydata.org/)
