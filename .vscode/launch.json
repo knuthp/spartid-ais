@@ -30,7 +30,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais"
+                // "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais"
+                "SQLALCHEMY_DATABASE_URI": "sqlite:////${workspaceFolder}/aisrt.db"
             }
 
         }

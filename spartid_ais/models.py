@@ -1,6 +1,16 @@
-from sqlalchemy import Column, DateTime, Float, Integer, String
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    Integer,
+    SmallInteger,
+    String,
+    Boolean,
+)
 
 from spartid_ais import db
+from pyais.constants import NavigationStatus, ManeuverIndicator
 
 
 class LastPositionReport(db.Model):
@@ -18,9 +28,20 @@ class LastPositionReport(db.Model):
 class HistoricPositionReport(db.Model):
     __tablename__ = "historic_position"
     id = Column(Integer, primary_key=True)
+    msg_type = Column(SmallInteger)
+    repeat = Column(SmallInteger)
     mmsi = Column(Integer, index=True)
+    status = Column(Enum(NavigationStatus))
+    turn = Column(Float)
+    speed = Column(Float)
+    accuracy = Column(Boolean)
     lat = Column(Float)
     long = Column(Float)
+    course = Column(Float)
+    heading = Column(Integer)
+    maneuver = Column(Enum(ManeuverIndicator))
+    raim = Column(Boolean)
+    radio = Column(Integer)
     timestamp = Column(DateTime)
 
 

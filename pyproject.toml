@@ -14,6 +14,7 @@ pyais = "^2.5.7"
 psycopg2-binary = "^2.9.9"
 matplotlib = "^3.8.0"
 flask-migrate = "^4.0.5"
+python-dotenv = "^1.0.0"
 
 
 
