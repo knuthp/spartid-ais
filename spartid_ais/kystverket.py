@@ -4,6 +4,7 @@ import sqlite3
 
 from pyais.messages import MessageType1, MessageType5, MessageType18
 from pyais.stream import TCPConnection
+from pyais.constants import TurnRate
 
 from spartid_ais import create_app
 from spartid_ais.models import (
@@ -29,10 +30,25 @@ def create_lastposition(ais_msg: MessageType1 | MessageType18):
 
 
 def create_historicposition(ais_msg: MessageType1):
+    if isinstance(ais_msg.turn, TurnRate):
+        turn_rate = ais_msg.turn.value
+    else:
+        turn_rate = ais_msg.turn
     return HistoricPositionReport(
+        msg_type=ais_msg.msg_type,
+        repeat=ais_msg.repeat,
         mmsi=ais_msg.mmsi,
+        status=ais_msg.status,
+        turn=turn_rate,
+        speed=ais_msg.speed,
+        accuracy=ais_msg.accuracy,
         lat=ais_msg.lat,
         long=ais_msg.lon,
+        course=ais_msg.course,
+        heading=ais_msg.heading,
+        maneuver=ais_msg.maneuver,
+        raim=ais_msg.raim,
+        radio=ais_msg.radio,
         timestamp=datetime.utcnow(),
     )
 
@@ -71,7 +87,7 @@ if __name__ == "__main__":
                         last_logging = utc_now
                         num_msgs = 0
 
-                    if decoded_message.msg_type in [1, 3, 18]:
+                    if decoded_message.msg_type in [1, 2, 3]:
                         last_postion = create_lastposition(decoded_message)
                         db.session.merge(last_postion)
 

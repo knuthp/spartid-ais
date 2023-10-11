@@ -62,18 +62,6 @@ def upgrade():
             batch_op.f("ix_last_position_mmsi"), ["mmsi"], unique=True
         )
 
-    with op.batch_alter_table("ImoVesselCodes", schema=None) as batch_op:
-        batch_op.drop_index("ix_ImoVesselCodes_mmsi")
-
-    op.drop_table("ImoVesselCodes")
-    with op.batch_alter_table("LastPosition", schema=None) as batch_op:
-        batch_op.drop_index("ix_LastPosition_mmsi")
-
-    op.drop_table("LastPosition")
-    with op.batch_alter_table("HistoricPosition", schema=None) as batch_op:
-        batch_op.drop_index("ix_HistoricPosition_mmsi")
-
-    op.drop_table("HistoricPosition")
     # ### end Alembic commands ###
 
 
