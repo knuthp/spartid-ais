@@ -6,7 +6,7 @@ authors = ["Knut H Pederseen <knuthp@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Flask = "^2.2.2"
+Flask = "^3.0.0"
 requests = "^2.28.1"
 flask-sqlalchemy = "^3.0.2"
 flask-marshmallow = "^0.15.0"
@@ -28,7 +28,7 @@ black = "^23.7.0"
 [tool.poetry.group.datasciene.dependencies]
 pandas = "^2.1.0"
 jupyterlab = "^4.0.5"
-pyarrow = "^13.0.0"
+pyarrow = "^14.0.1"
 
 
 [tool.isort]
