@@ -1,6 +1,6 @@
 import datetime
 
-from flask import abort, jsonify, send_from_directory, Blueprint
+from flask import abort, jsonify, render_template, Blueprint
 from spartid_ais.models import (
     HistoricPositionReport,
     ImoVesselCodes,
@@ -13,7 +13,7 @@ bp = Blueprint("views", __name__)
 
 @bp.route("/")
 def hRoot():
-    return send_from_directory("static", "leaflet.html")
+    return render_template("leaflet.html.j2")
 
 
 def _last_position_report_2_geojson(x):
