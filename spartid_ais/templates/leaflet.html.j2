@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
+{% extends "base.html.j2" %}
+
+{% block head %}
+    {{ super() }}
+    <meta charset="utf-8">
         <title>AIS history Norway</title>
         <link
             rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -22,9 +23,13 @@
             crossorigin=""></script>
    		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/org-arl/leaflet-tracksymbol2/dist/leaflet-tracksymbol2.umd.js"></script>
-    </head>
-    <body>
+{% endblock head %}
+
+{% block content %}
      <div id="map"></div>
+{% endblock content %}
+
+{% block scripts %}
         <script>
             const kartverketAttr = '<a href="http://www.kartverket.no/">Kartverket</a>'
             const kystverketAttr = '<a href="http://www.kystverket.no/">Kystverket</a>'
@@ -131,5 +136,5 @@
                     });
             }, false);
         </script>
-    </body>
-</html>
+        {{ super() }}
+{% endblock scripts %}

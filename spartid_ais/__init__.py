@@ -1,12 +1,12 @@
-import os
 import logging
+import os
 from logging.config import dictConfig
 
 from flask import Flask
+from flask_bootstrap import Bootstrap5
 from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from flask_sqlalchemy import SQLAlchemy
 
 dictConfig(
     {
@@ -30,6 +30,7 @@ dictConfig(
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
+bootstrap = Bootstrap5()
 
 logger = logging.getLogger(__name__)
 
@@ -44,11 +45,14 @@ def create_app():
         db.create_all()
     ma.init_app(app)
     migrate.init_app(app, db)
+    bootstrap.init_app(app)
 
     # Blueprints
+    from spartid_ais.view_dataexplore import bp as dataexplore_bp
     from spartid_ais.views import bp as errors_bp
 
     app.register_blueprint(errors_bp)
+    app.register_blueprint(dataexplore_bp)
 
     logger.info("Url maps %s", app.url_map)
     return app
