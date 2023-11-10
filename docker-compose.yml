@@ -10,9 +10,10 @@ services:
     volumes:
       - database:/data/sqlite
     environment:
-      - SQLALCHEMY_DATABASE_URI=sqlite:////data/sqlite/aisrt.db
+      - SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@db:5432/spartid_ais
     depends_on:
-      - "poller"
+      - poller
+      - db
 
   poller:
     build:
@@ -21,8 +22,23 @@ services:
     volumes:
       - database:/data/sqlite
     environment:
-      - SQLALCHEMY_DATABASE_URI=sqlite:////data/sqlite/aisrt.db
+      - SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@db:5432/spartid_ais
+    depends_on:
+      - db
 
 
+  db:
+    image: postgis/postgis:16-3.4
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=spartid_ais
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
 volumes:
+  db:
+    driver: local
   database:

@@ -5,6 +5,8 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 
 dictConfig(
     {
@@ -27,7 +29,7 @@ dictConfig(
 
 db = SQLAlchemy()
 ma = Marshmallow()
-
+migrate = Migrate()
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,9 @@ def create_app():
     with app.app_context():
         db.create_all()
     ma.init_app(app)
+    migrate.init_app(app, db)
+
+    # Blueprints
     from spartid_ais.views import bp as errors_bp
 
     app.register_blueprint(errors_bp)
