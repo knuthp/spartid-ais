@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Webapp",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "flask",
             "env": {
@@ -24,7 +24,7 @@
         },
         {
             "name": "Python: AIS Poller",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "spartid_ais/kystverket.py",
             "console": "integratedTerminal",
