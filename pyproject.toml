@@ -15,9 +15,9 @@ psycopg2-binary = "^2.9.9"
 matplotlib = "^3.8.0"
 flask-migrate = "^4.0.5"
 python-dotenv = "^1.0.0"
-duckdb = "^0.9.1"
+#duckdb = "^0.9.1"
 pandas = "^2.1.0"
-pyarrow = "^14.0.1"
+#pyarrow = "^14.0.1"
 bootstrap-flask = "^2.3.2"
 
 
