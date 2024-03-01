@@ -6,3 +6,9 @@ This demo is made using Python with Flask for the web server part, Leaflet/HTML 
 
 # Example
 ![Map](docs/AIS_history.png)
+
+
+## Backup
+```bash
+docker exec spartid-ais_db_1 pg_dump -U postgres spartid_ais | gzip > /srv/db-backups/posgtres/spartid_ais/spartid_ais-$(date +%Y-%m-%d).tar.gz
+```
