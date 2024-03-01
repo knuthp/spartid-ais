@@ -5,10 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
+    restart: always
     ports:
       - "9101:5000"
-    volumes:
-      - database:/data/sqlite
     environment:
       - SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@db:5432/spartid_ais
     depends_on:
@@ -19,6 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.poller
+    restart: always
     volumes:
       - database:/data/sqlite
     environment:
