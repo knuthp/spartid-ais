@@ -19,6 +19,9 @@ python-dotenv = "^1.0.0"
 pandas = "^2.1.0"
 #pyarrow = "^14.0.1"
 bootstrap-flask = "^2.3.2"
+duckdb = "^0.10.0"
+shapely = "^2.0.3"
+# marshmallow-sqlalchemy = "^1.0.0"
 
 
 
