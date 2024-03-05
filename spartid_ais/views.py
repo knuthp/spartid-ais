@@ -67,15 +67,17 @@ def tracks_within_geojson():
         ATTACH 'dbname=spartid_ais user=postgres password=postgres host=127.0.0.1' AS db (TYPE postgres); 
     """)
     feature = geojson_data
-    area = shape(feature["features"][0]["geometry"])
+    areas = [shape(x["geometry"]) for x in feature["features"]]
+
+    multi_intersects = " OR ".join([f"ST_INTERSECTS(geom, (?))" for _ in areas])
     # Execute the SQL query to 
-    query = """
-        SELECT *, ST_POINT(long, lat) as geom, datediff('hour', now() AT TIME ZONE 'UTC', timestamp)
-        FROM db.public.last_position
-        WHERE ST_INTERSECTS(geom, (?)) AND datediff('hour', now()::timestamp, timestamp) > -6
+    query = f"""
+    SELECT *, ST_POINT(long, lat) as geom, datediff('hour', now() AT TIME ZONE 'UTC', timestamp)
+    FROM db.public.last_position
+    WHERE ({multi_intersects}) AND datediff('hour', now()::timestamp, timestamp) > -6
     """
 
-    df = con.execute(query, (area.wkt,)).df()
+    df = con.execute(query, [area.wkt for area in areas]).df()
     ret = []
     for _, row in df.iterrows():
         ret.append({
