@@ -1,6 +1,7 @@
 import datetime
+from urllib.parse import urlparse
 
-from flask import abort, jsonify, render_template, request, Blueprint
+from flask import abort, current_app, jsonify, render_template, request, Blueprint
 import duckdb
 from shapely.geometry import shape
 from spartid_ais.models import (
@@ -58,13 +59,15 @@ def aTracks():
 
 @bp.route("/api/tracks/within_geojson", methods=["POST"])
 def tracks_within_geojson():
+    constring = current_app.config["SQLALCHEMY_DATABASE_URI"]
+    con_splitted = urlparse(constring)
     geojson_data = request.json
     con = duckdb.connect()
     for ext in ["postgres", "spatial"]:
         con.install_extension(ext)
         con.load_extension(ext)
-    con.sql("""
-        ATTACH 'dbname=spartid_ais user=postgres password=postgres host=127.0.0.1' AS db (TYPE postgres); 
+    con.sql(f"""
+        ATTACH 'dbname=spartid_ais user={con_splitted.username} password={con_splitted.password} host={con_splitted.hostname}' AS db (TYPE postgres); 
     """)
     feature = geojson_data
     areas = [shape(x["geometry"]) for x in feature["features"]]
