@@ -3,3 +3,4 @@
 *.pyc
 aisrt.db
 aisrt.db-journal
+.spartid-ais.env

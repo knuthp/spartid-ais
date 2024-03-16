@@ -38,8 +38,8 @@
             const sjokart = L.tileLayer(kartverketUrl, {id : 'sjokartraster', attribution: kartverketAttr})
 
             const map = L.map('map', {
-            	center: [59.824713, 10.456367],
-            	zoom: 11,
+            	center: [{{ map.center.lat }}, {{ map.center.long }}],
+            	zoom: {{ map.zoom }},
             	layers: [topo2, sjokart]
             });
 
