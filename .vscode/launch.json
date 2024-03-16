@@ -12,12 +12,16 @@
             "env": {
                 "FLASK_APP": "spartid_ais",
                 "FLASK_DEBUG": "1",
-                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais"
+                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/spartid_ais",
+                "MAP__ZOOM": "16",
+                "MAP__CENTER__LONG": "10.611268532369081",
+                "MAP__CENTER__LAT": "59.669607206900906"
             },
             "args": [
                 "run",
                 "--no-debugger",
-                "--no-reload"
+                "--no-reload",
+                "--host=0.0.0.0"
             ],
             "jinja": true,
             "justMyCode": true

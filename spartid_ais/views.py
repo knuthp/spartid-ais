@@ -9,14 +9,13 @@ from spartid_ais.models import (
     ImoVesselCodes,
     LastPositionReport,
 )
-
+from spartid_ais import settings
 
 bp = Blueprint("views", __name__)
 
-
 @bp.route("/")
 def hRoot():
-    return render_template("leaflet.html.j2")
+    return render_template("leaflet.html.j2", map=settings.map)
 
 
 def _last_position_report_2_geojson(x):

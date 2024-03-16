@@ -7,6 +7,7 @@ from flask_bootstrap import Bootstrap5
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from spartid_ais.settings import Settings
 
 dictConfig(
     {
@@ -31,7 +32,7 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 bootstrap = Bootstrap5()
-
+settings = Settings()
 logger = logging.getLogger(__name__)
 
 
