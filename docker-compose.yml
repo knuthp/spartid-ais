@@ -11,7 +11,7 @@ services:
       - SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@db:5432/spartid_ais
     env_file:
       - path: .spartid-ais.env
-        required: true
+        required: false
     depends_on:
       - poller
       - db
