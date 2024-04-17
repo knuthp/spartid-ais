@@ -1,20 +1,21 @@
 import datetime
 from urllib.parse import urlparse
 
-from flask import abort, current_app, jsonify, render_template, request, Blueprint
 import duckdb
+from flask import Blueprint, abort, current_app, jsonify, render_template, request
 from shapely.geometry import shape
+
+from spartid_ais import settings
 from spartid_ais.models import (
     HistoricPositionReport,
     ImoVesselCodes,
     LastPositionReport,
 )
-from spartid_ais import settings
 
 bp = Blueprint("views", __name__)
 
 @bp.route("/")
-def hRoot():
+def root():
     return render_template("leaflet.html.j2", map=settings.map)
 
 
@@ -46,7 +47,7 @@ def _last_position_report_2_geojson(x):
     }
 
 @bp.route("/api/tracks")
-def aTracks():
+def tracks():
     six_hours_ago = datetime.datetime.utcnow() - datetime.timedelta(hours=6)
     tracks = LastPositionReport.query.filter(
         LastPositionReport.timestamp > six_hours_ago
@@ -66,13 +67,17 @@ def tracks_within_geojson():
         con.install_extension(ext)
         con.load_extension(ext)
     con.sql(f"""
-        ATTACH 'dbname=spartid_ais user={con_splitted.username} password={con_splitted.password} host={con_splitted.hostname}' AS db (TYPE postgres); 
+        ATTACH 'dbname=spartid_ais
+            user={con_splitted.username}
+            password={con_splitted.password}
+            host={con_splitted.hostname}'
+        AS db (TYPE postgres);
     """)
     feature = geojson_data
     areas = [shape(x["geometry"]) for x in feature["features"]]
 
-    multi_intersects = " OR ".join([f"ST_INTERSECTS(geom, (?))" for _ in areas])
-    # Execute the SQL query to 
+    multi_intersects = " OR ".join(["ST_INTERSECTS(geom, (?))" for _ in areas])
+    # Execute the SQL query to
     query = f"""
     SELECT *, ST_POINT(long, lat) as geom, datediff('hour', now() AT TIME ZONE 'UTC', timestamp)
     FROM db.public.last_position
@@ -92,12 +97,12 @@ def tracks_within_geojson():
                 "timestamp": row["timestamp"],
             },
             "geometry": {"type": "Point", "coordinates": [row["long"], row["lat"]]},
-        })    
+        })
     return jsonify({"type": "FeatureCollection", "features": ret})
 
 
 @bp.route("/api/tracks/<mmsi>")
-def aTrack(mmsi):
+def tracks_mmsi(mmsi):
     track = LastPositionReport.query.filter(
         LastPositionReport.mmsi == int(mmsi)
     ).first()
@@ -108,19 +113,19 @@ def aTrack(mmsi):
 
 
 @bp.route("/api/tracks/<mmsi>/history")
-def aTrackHistory(mmsi):
+def track_mmsi_history(mmsi):
     history = HistoricPositionReport.query.filter(
         HistoricPositionReport.mmsi == int(mmsi)
     ).all()
     geojson_coordinates = []
     linestring = []
-    lastReport = None
+    last_report = None
     for x in history:
-        if lastReport and x.timestamp > lastReport + datetime.timedelta(minutes=30):
+        if last_report and x.timestamp > last_report + datetime.timedelta(minutes=30):
             if linestring:
                 geojson_coordinates.append(linestring)
             linestring = []
-        lastReport = x.timestamp
+        last_report = x.timestamp
         linestring.append([x.long, x.lat])
     geojson_coordinates.append(linestring)
     return jsonify(
@@ -132,17 +137,17 @@ def aTrackHistory(mmsi):
 
 
 @bp.route("/api/tracks/<mmsi>/details")
-def aTrackDetails(mmsi):
-    imoVesselCodes = ImoVesselCodes.query.filter(
+def track_mmsi_details(mmsi):
+    imo_vessel_codes = ImoVesselCodes.query.filter(
         ImoVesselCodes.mmsi == str(mmsi)
     ).first()
-    if imoVesselCodes is None:
+    if imo_vessel_codes is None:
         return jsonify({"error": "Not found"})
     return jsonify(
         {
-            "imo": imoVesselCodes.imo,
-            "name": imoVesselCodes.name,
-            "flag": imoVesselCodes.flag,
-            "type": imoVesselCodes.type,
+            "imo": imo_vessel_codes.imo,
+            "name": imo_vessel_codes.name,
+            "flag": imo_vessel_codes.flag,
+            "type": imo_vessel_codes.type,
         }
     )

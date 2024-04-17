@@ -1,12 +1,12 @@
 import logging
-from datetime import datetime, timedelta
 import sqlite3
-import sqlalchemy.exc
+from datetime import datetime, timedelta
 from socket import AF_INET, SOCK_STREAM, socket
 
+import sqlalchemy.exc
+from pyais.constants import TurnRate
 from pyais.messages import MessageType1, MessageType5, MessageType18
 from pyais.stream import SocketStream
-from pyais.constants import TurnRate
 
 from spartid_ais import create_app
 from spartid_ais.models import (
@@ -32,10 +32,7 @@ def create_lastposition(ais_msg: MessageType1 | MessageType18):
 
 
 def create_historicposition(ais_msg: MessageType1):
-    if isinstance(ais_msg.turn, TurnRate):
-        turn_rate = ais_msg.turn.value
-    else:
-        turn_rate = ais_msg.turn
+    turn_rate = ais_msg.turn.value if isinstance(ais_msg.turn, TurnRate) else ais_msg.turn
     return HistoricPositionReport(
         msg_type=ais_msg.msg_type,
         repeat=ais_msg.repeat,
@@ -128,9 +125,9 @@ if __name__ == "__main__":
                             # logger.warning(
                             #    "Not expected message type %s", decoded_message
                             # )
-                    except (sqlite3.OperationalError, sqlalchemy.exc.OperationalError):
+                    except (sqlite3.OperationalError, sqlalchemy.exc.OperationalError):  # noqa: PERF203
                         logger.exception("Database Operational Error.")
-            except ConnectionRefusedError:
+            except ConnectionRefusedError:  # noqa: PERF203
                 logger.exception("Connection refused")
             except TimeoutError:
                 logger.exception("Timeout error")

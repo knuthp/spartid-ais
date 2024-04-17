@@ -29,9 +29,7 @@ pydantic-settings = "^2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"
-flake8 = "^7.0.0"
-isort = "^5.10.1"
-black = "^24.2.0"
+ruff = "^0.3.7"
 
 
 [tool.poetry.group.datasciene.dependencies]

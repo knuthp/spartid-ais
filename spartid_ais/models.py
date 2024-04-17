@@ -1,12 +1,12 @@
 from datetime import datetime
+
+from pyais.constants import ManeuverIndicator, NavigationStatus
 from sqlalchemy import (
     SmallInteger,
 )
-
 from sqlalchemy.orm import Mapped, mapped_column
 
 from spartid_ais import db
-from pyais.constants import NavigationStatus, ManeuverIndicator
 
 
 class LastPositionReport(db.Model):

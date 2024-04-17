@@ -1,0 +1,81 @@
+# Set the maximum line length
+line-length = 88
+indent-width = 4
+target-version = "py310"
+respect-gitignore = true
+
+cache-dir = "~/.cache/ruff"
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[lint]
+select = [
+    "RUF", # Ruff
+    "C", # McCabe
+    "B", # flake8-bugbear
+    "FBT", # flake8-boolean-trap
+    "PTH", # flake8-use-pathlib
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+    "ANN", # flake8-annotations
+    "N", # pep8-naming
+    "F", # Pyflakes
+    "E", # Pycodestyle
+    "W", # Pycodestyle
+    "I001", # isort
+    "PL", # Pylint
+    "TRY", # Tryceratops
+    "PERF", # Perflint
+    "FURB", # Refurb
+]
+
+ignore = [
+    # Ignore unused args in functions and methods,
+    # as, for example, some pytest fixtures are not referenced in block
+    "ARG001",
+    "ARG002",
+
+    # Annotations
+    "ANN101", # missing-type-self
+    "ANN201", # missing-return-type-undocumented-public-functions
+    "TRY003", # raise-vanilla-args
+    "PLR6301", # no-self-use
+
+    # Pycodestyle (Ignored for formatter compatibility)
+    # https://docs.astral.sh/formatter/#conflicting-lint-rules
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+]
+
+unfixable = ["B", "F401"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[lint.pycodestyle]
+max-line-length = 97
+
+[lint.flake8-annotations]
+suppress-dummy-args = true
+ignore-fully-untyped = true
+
+[lint.isort]
+combine-as-imports = true
+order-by-type = true
+
+[lint.pylint]
+max-args = 10
+
+[lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Option"]

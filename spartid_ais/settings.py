@@ -11,6 +11,7 @@ export MAP__CENTER__LAT=59.669607206900906
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class PositionSettings(BaseModel):
     lat: float
     long: float

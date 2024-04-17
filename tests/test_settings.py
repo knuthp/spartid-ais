@@ -3,4 +3,5 @@ from spartid_ais.settings import Settings
 
 def test_default():
     settings = Settings()
-    assert settings.map.zoom == 11
+    default_zoom = 11
+    assert settings.map.zoom == default_zoom

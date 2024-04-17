@@ -29,3 +29,9 @@ MAP__ZOOM=16
 MAP__CENTER__LONG=10.611268532369081
 MAP__CENTER__LAT=59.669607206900906
 ```
+
+
+## Backup
+```bash
+docker exec spartid-ais-db-1 pg_dump -U postgres spartid_ais | gzip > /srv/db-backups/posgtres/spartid_ais/spartid_ais-$(date +%Y-%m-%d).tar.gz
+```

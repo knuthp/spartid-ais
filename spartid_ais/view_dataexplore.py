@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
 import pandas as pd
+from flask import Blueprint, render_template
+
 from spartid_ais import db
 
 bp = Blueprint("dataexplore", __name__)
