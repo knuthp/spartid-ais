@@ -8,10 +8,11 @@ FROM python as poetry
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV PATH="$POETRY_HOME/bin:$PATH"
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.8.2
 COPY pyproject.toml ./
 COPY poetry.lock ./
-RUN poetry install --only main --no-interaction --no-ansi -vvv
+RUN mkdir -p /app/spartid_ais && touch /app/spartid_ais/__init__.py
+RUN poetry install --only main --no-interaction --no-ansi
 
 
 
