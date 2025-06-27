@@ -5,29 +5,29 @@ description = "AIS example with data from Kystverket in Norway"
 authors = [
     {name = "Knut H Pederseen", email = "knuthp@gmail.com"}
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 dependencies = [
-    "Flask>=3.0.3",
-    "requests>=2.32.3",
-    "flask-sqlalchemy>=3.0.2",
-    "flask-marshmallow>=1.2.0",
-    "pyais>=2.5.7",
-    "psycopg2-binary>=2.9.9",
-    "matplotlib>=3.8.0",
+    "Flask>=3.1.1",
+    "requests>=2.32.4",
+    "flask-sqlalchemy>=3.1.1",
+    "flask-marshmallow>=1.3.0",
+    "pyais>=2.10.0",
+    "psycopg2-binary>=2.9.10",
+    "matplotlib>=3.10.3",
     "flask-migrate>=4.0.5",
-    "python-dotenv>=1.0.0",
-    "pandas>=2.1.0",
-    "bootstrap-flask>=2.3.2",
-    "duckdb>=1.1.1",
-    "shapely>=2.0.3",
-    "pydantic>=2.9.2",
-    "pydantic-settings>=2.5.2",
+    "python-dotenv>=1.1.1",
+    "pandas>=2.3.0",
+    "bootstrap-flask>=2.5.0",
+    "duckdb>=1.3.1",
+    "shapely>=2.1.1",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
 ]
 
 [tool.uv]
 dev-dependencies = [
-    "pytest>=8.0.2",
-    "ruff>=0.6.8",
+    "pytest>=8.4.1",
+    "ruff>=0.12.1",
 ]
 
 [tool.uv.sources]
