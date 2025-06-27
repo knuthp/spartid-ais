@@ -1,41 +1,42 @@
-[tool.poetry]
+[project]
 name = "spartid-ais"
-version = "0.1.0"
+version = "1.0.0"
 description = "AIS example with data from Kystverket in Norway"
-authors = ["Knut H Pederseen <knuthp@gmail.com>"]
+authors = [
+    {name = "Knut H Pederseen", email = "knuthp@gmail.com"}
+]
+requires-python = ">=3.9"
+dependencies = [
+    "Flask>=3.0.3",
+    "requests>=2.32.3",
+    "flask-sqlalchemy>=3.0.2",
+    "flask-marshmallow>=1.2.0",
+    "pyais>=2.5.7",
+    "psycopg2-binary>=2.9.9",
+    "matplotlib>=3.8.0",
+    "flask-migrate>=4.0.5",
+    "python-dotenv>=1.0.0",
+    "pandas>=2.1.0",
+    "bootstrap-flask>=2.3.2",
+    "duckdb>=1.1.1",
+    "shapely>=2.0.3",
+    "pydantic>=2.9.2",
+    "pydantic-settings>=2.5.2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-Flask = "^3.0.3"
-requests = "^2.32.3"
-flask-sqlalchemy = "^3.0.2"
-flask-marshmallow = "^1.2.0"
-pyais = "^2.5.7"
-psycopg2-binary = "^2.9.9"
-matplotlib = "^3.8.0"
-flask-migrate = "^4.0.5"
-python-dotenv = "^1.0.0"
-pandas = "^2.1.0"
-bootstrap-flask = "^2.3.2"
-duckdb = "^1.1.1"
-shapely = "^2.0.3"
-pydantic = "^2.9.2"
-pydantic-settings = "^2.5.2"
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.2",
+    "ruff>=0.6.8",
+]
 
+[tool.uv.sources]
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.0.2"
-ruff = "^0.6.8"
-
-
-[tool.poetry.group.datasciene.dependencies]
-jupyterlab = "^4.2.5"
-
-
-[tool.isort]
-profile = "black"
+[dependency-groups]
+datascience = [
+    "jupyterlab>=4.2.5",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
