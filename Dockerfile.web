@@ -1,24 +1,29 @@
-FROM python:3.11.5 as python
+FROM python:3.13 AS python
 ENV PYTHONUNBUFFERED=true
 RUN apt-get update -y && apt-get install -y python3-dev build-essential curl
 WORKDIR /app
 
 
-FROM python as poetry
-ENV POETRY_HOME=/opt/poetry
-ENV POETRY_VIRTUALENVS_IN_PROJECT=true
-ENV PATH="$POETRY_HOME/bin:$PATH"
-RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.8.2
+FROM python AS uv
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 COPY pyproject.toml ./
-COPY poetry.lock ./
+COPY uv.lock ./
 RUN mkdir -p /app/spartid_ais && touch /app/spartid_ais/__init__.py
-RUN poetry install --only main --no-interaction --no-ansi
+# Install dependencies - uv will create and use the venv automatically
+RUN uv sync --frozen --no-dev
+# Verify flask is installed and available
+RUN /opt/venv/bin/flask --version
 
 
-
-FROM python as runtime
-ENV PATH="/app/.venv/bin:$PATH"
-COPY --from=poetry /app /app
+FROM python AS runtime
+# Copy the virtual environment
+COPY --from=uv /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV VIRTUAL_ENV=/opt/venv
 COPY . /app/
 EXPOSE 8000
 ENV PYTHONPATH="${PYTHONPATH}:/app"
