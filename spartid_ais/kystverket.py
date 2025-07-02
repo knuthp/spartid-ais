@@ -1,6 +1,6 @@
 import logging
 import sqlite3
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from socket import AF_INET, SOCK_STREAM, socket
 
 import sqlalchemy.exc
@@ -27,7 +27,7 @@ def create_lastposition(ais_msg: MessageType1 | MessageType18):
         speed=ais_msg.speed,
         course=ais_msg.course,
         heading=ais_msg.heading,
-        timestamp=datetime.now(UTC),
+        timestamp=datetime.now(timezone.utc),
     )
 
 
@@ -48,7 +48,7 @@ def create_historicposition(ais_msg: MessageType1):
         maneuver=ais_msg.maneuver,
         raim=ais_msg.raim,
         radio=ais_msg.radio,
-        timestamp=datetime.now(UTC),
+        timestamp=datetime.now(timezone.utc),
     )
 
 
@@ -93,14 +93,14 @@ class KystverketTCPConnection(SocketStream):
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        last_logging = datetime.now(UTC) - timedelta(seconds=LOG_STATS_FREQ_S - 5)
+        last_logging = datetime.now(timezone.utc) - timedelta(seconds=LOG_STATS_FREQ_S - 5)
         num_msgs = 0
         while True:
             try:
                 for msg in KystverketTCPConnection(KYSTINFO_HOST, KYSTINFO_PORT):
                     try:
                         decoded_message = msg.decode()
-                        utc_now = datetime.now(UTC)
+                        utc_now = datetime.now(timezone.utc)
                         logger.debug("decoded: {}".format(decoded_message))
 
                         num_msgs += 1
