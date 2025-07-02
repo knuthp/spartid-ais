@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone
 from urllib.parse import urlparse
 
 import duckdb
@@ -48,7 +49,7 @@ def _last_position_report_2_geojson(x):
 
 @bp.route("/api/tracks")
 def tracks():
-    six_hours_ago = datetime.datetime.utcnow() - datetime.timedelta(hours=6)
+    six_hours_ago = datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=6)
     tracks = LastPositionReport.query.filter(
         LastPositionReport.timestamp > six_hours_ago
     ).all()
