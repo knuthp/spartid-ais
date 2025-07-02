@@ -3,7 +3,8 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: Dockerfile.web
+      dockerfile: Dockerfile
+    image: spartid-ais-web:latest
     ports:
       - "9101:5000"
     environment:
@@ -14,19 +15,18 @@ services:
     depends_on:
       - poller
       - db
+    command: ["flask", "--app=spartid_ais", "run", "--host=0.0.0.0"]
 
   poller:
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile.poller
+    image: spartid-ais-web:latest
     volumes:
       - database:/data/sqlite
     environment:
       - SQLALCHEMY_DATABASE_URI=postgresql://postgres:postgres@db:5432/spartid_ais
     depends_on:
       - db
-
+    command: ["python", "spartid_ais/kystverket.py"]
 
   db:
     image: postgis/postgis:16-3.4
