@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     build-essential \
     curl \
+    bash \
     && rm -rf /var/lib/apt/lists/*
 # Create non-root user
 RUN groupadd --gid 1000 appuser && \
