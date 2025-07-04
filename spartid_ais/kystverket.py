@@ -32,7 +32,9 @@ def create_lastposition(ais_msg: MessageType1 | MessageType18):
 
 
 def create_historicposition(ais_msg: MessageType1):
-    turn_rate = ais_msg.turn.value if isinstance(ais_msg.turn, TurnRate) else ais_msg.turn
+    turn_rate = (
+        ais_msg.turn.value if isinstance(ais_msg.turn, TurnRate) else ais_msg.turn
+    )
     return HistoricPositionReport(
         msg_type=ais_msg.msg_type,
         repeat=ais_msg.repeat,
@@ -93,7 +95,9 @@ class KystverketTCPConnection(SocketStream):
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        last_logging = datetime.now(timezone.utc) - timedelta(seconds=LOG_STATS_FREQ_S - 5)
+        last_logging = datetime.now(timezone.utc) - timedelta(
+            seconds=LOG_STATS_FREQ_S - 5
+        )
         num_msgs = 0
         while True:
             try:

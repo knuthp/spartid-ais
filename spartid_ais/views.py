@@ -15,6 +15,7 @@ from spartid_ais.models import (
 
 bp = Blueprint("views", __name__)
 
+
 @bp.route("/")
 def root():
     return render_template("leaflet.html.j2", map=settings.map)
@@ -46,6 +47,7 @@ def _last_position_report_2_geojson(x):
         },
         "geometry": {"type": "Point", "coordinates": [x.long, x.lat]},
     }
+
 
 @bp.route("/api/tracks")
 def tracks():
@@ -88,17 +90,19 @@ def tracks_within_geojson():
     df = con.execute(query, [area.wkt for area in areas]).df()
     ret = []
     for _, row in df.iterrows():
-        ret.append({
-            "type": "Feature",
-            "properties": {
-                "mmsi": row["mmsi"],
-                "course": row["course"],
-                "heading": row["heading"],
-                "speed": row["speed"],
-                "timestamp": row["timestamp"],
-            },
-            "geometry": {"type": "Point", "coordinates": [row["long"], row["lat"]]},
-        })
+        ret.append(
+            {
+                "type": "Feature",
+                "properties": {
+                    "mmsi": row["mmsi"],
+                    "course": row["course"],
+                    "heading": row["heading"],
+                    "speed": row["speed"],
+                    "timestamp": row["timestamp"],
+                },
+                "geometry": {"type": "Point", "coordinates": [row["long"], row["lat"]]},
+            }
+        )
     return jsonify({"type": "FeatureCollection", "features": ret})
 
 
