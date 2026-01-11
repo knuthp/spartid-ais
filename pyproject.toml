@@ -26,6 +26,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "geopandas>=1.1.2",
+    "lonboard>=0.13.0",
+    "pyarrow>=22.0.0",
     "pytest>=8.4.1",
     "ruff>=0.12.1",
 ]
