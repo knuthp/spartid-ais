@@ -26,8 +26,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "folium>=0.20.0",
     "geopandas>=1.1.2",
     "lonboard>=0.13.0",
+    "mapclassify>=2.10.0",
+    "matplotlib>=3.10.3",
+    "movingpandas>=0.22.4",
     "pyarrow>=22.0.0",
     "pytest>=8.4.1",
     "ruff>=0.12.1",
